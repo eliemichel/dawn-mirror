@@ -95,10 +95,11 @@ jobs:
           path: out/install
 
       - name: Compress artifact
-        shell: bash
-        run: |
-          cd out/install
-          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip *
+        uses: eliemichel/dawn-mirror/.github/actions/zip@github
+        with:
+          name: dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}
+          path: '*'
+          wd: out/install
 
       - name: Upload to release
         env:
