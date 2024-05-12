@@ -8,14 +8,8 @@ jobs:
     steps:
       - name: Find latest tag
         run: |
-          mkdir -p prebuild
-          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -rV | head -n 1 | tail -c +11 > prebuild/tag-name
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: prebuild
-          path: prebuild
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -rV | head -n 1 | tail -c +11 > tag-name
+          echo "tag-name=$(cat tag-name)" >> "$GITHUB_OUTPUT"
 
   build-artifacts:
     strategy:
@@ -30,22 +24,12 @@ jobs:
         config: [ Debug, Release ]
 
     runs-on: ${{ matrix.os.image }}
+    needs: prebuild
     steps:
-      - name: Download prebuild artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: prebuild
-          path: prebuild
-
-      - name: Get latest tag
-        id: find-tag
-        run: |
-          echo "tag-name=$(cat prebuild/tag-name)" >> "$GITHUB_OUTPUT"
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.find-tag.outputs.tag-name }}
+          ref: ${{ needs.prebuild.steps.find-tag.outputs.tag-name }}
 
       - name: Configure
         run: >
