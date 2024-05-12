@@ -13,4 +13,9 @@ jobs:
       - name: Get latest release tag
         run: |
           cd $GITHUB_WORKSPACE
-          git tag
+          git show-ref
+          #echo $(git tag)
+          #echo $(git tag --sort=-v:refname -l dawn/\*)
+          #echo $(git tag --sort=-v:refname -l dawn/\* | head -c 1)
+          #TAG_NAME=$(git tag --sort=-v:refname -l dawn/\* | head -c 1)
+          #echo "TAG_NAME=$TAG_NAME"
