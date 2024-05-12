@@ -24,7 +24,7 @@ jobs:
           echo mirror/$(cat latest-dawn-tag | tail -c +6) > new-mirror-tag
 
           # 'skip' is non empty if the new tag already exists
-          echo "skip=$(grep -Fx refs/tags/$(cat new-mirror-tag) mirror-tags)"
+          echo "skip=$(if grep -Fxq refs/tags/$(cat new-mirror-tag) mirror-tags; then echo true; else echo false; fi)"
           echo "dawn-tag=$(cat latest-dawn-tag)" >> "$GITHUB_OUTPUT"
           echo "mirror-tag=$(cat new-mirror-tag)" >> "$GITHUB_OUTPUT"
 
