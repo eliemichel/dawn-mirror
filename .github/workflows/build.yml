@@ -6,6 +6,13 @@ jobs:
   build-artifacts:
     runs-on: ubuntu-latest
     steps:
+      - name: Find latest tag
+        run: |
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\*
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -V
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -V | head -c 1
+          TAG_NAME=$(git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -V | head -c 1)
+          echo "TAG_NAME=$TAG_NAME"
       - name: Checkout
         uses: actions/checkout@v4
         with:
