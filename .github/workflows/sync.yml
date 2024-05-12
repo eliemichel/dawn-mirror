@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  UPSTREAM_REMOTE: https://github.com/eliemichel/Dawn-mock
+  UPSTREAM_REMOTE: https://dawn.googlesource.com/dawn
+  MOCK_UPSTREAM_REMOTE: https://github.com/eliemichel/Dawn-mock
 
 jobs:
   sync-mirror:
@@ -21,7 +22,7 @@ jobs:
           git remote add --mirror=fetch upstream "${{ env.UPSTREAM_REMOTE }}"
           git fetch upstream +refs/heads/*:refs/remotes/origin/*
           echo "Pushing to 'https://${GITHUB_ACTOR}:${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git'..."
-          git push --mirror --prune origin
+          git push --force --mirror --prune origin
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

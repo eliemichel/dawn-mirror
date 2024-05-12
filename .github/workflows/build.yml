@@ -53,6 +53,9 @@ jobs:
         os:
           - name: linux
             image: ubuntu-latest
+            install-deps: |
+              sudo apt-get update -y
+              sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev mesa-common-dev libx11-xcb-dev pkg-config nodejs npm
           - name: windows
             image: windows-latest
           - name: macos
@@ -64,6 +67,16 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Install dependencies
+        if: ${{ matrix.os.install-deps }}
+        run: ${{ matrix.os.install-deps }}
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip' # caching pip dependencies
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -75,6 +88,7 @@ jobs:
           -B out
           -DCMAKE_BUILD_TYPE=${{ matrix.config }}
           -DCMAKE_INSTALL_PREFIX=out/install
+          -DDAWN_FETCH_DEPENDENCIES=ON
 
       - name: Build
         run: >
@@ -87,12 +101,6 @@ jobs:
           cmake
           --install out
           --config ${{ matrix.config }}
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}
-          path: out/install
 
       - name: Compress artifact
         uses: eliemichel/dawn-mirror/.github/actions/zip@github
