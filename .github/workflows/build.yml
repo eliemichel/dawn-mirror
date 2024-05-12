@@ -1,6 +1,5 @@
 on:
   create
-  workflow_dispatch
 
 jobs:
   build_artifacts:
