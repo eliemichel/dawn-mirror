@@ -17,10 +17,10 @@ jobs:
           echo "This merges upstream repo"
           # Inspired by https://github.com/bridgelightcloud/github-mirror-action/blob/main/action.sh
           git config --global --add safe.directory /github/workspace
-          git clone --bare "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
+          git clone --bare "https://${GITHUB_ACTOR}:${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
           git remote add --mirror=fetch upstream "${{ env.UPSTREAM_REMOTE }}"
           git fetch upstream +refs/heads/*:refs/remotes/origin/*
-          echo "Pushing to 'https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git'..."
+          echo "Pushing to 'https://${GITHUB_ACTOR}:${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git'..."
           git push --mirror --prune origin
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
