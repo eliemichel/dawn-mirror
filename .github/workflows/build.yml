@@ -16,6 +16,10 @@ jobs:
           TAG_NAME=$(git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -rV | head -c 1 | tail -c +11)
           echo "TAG_NAME=$TAG_NAME"
           echo "tag-name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+      - name: Test output
+        run: echo "CHECK_TAG_NAME=$TAG_NAME"
+        env:
+          TAG_NAME: ${{ steps.find-tag.outputs.tag-name }}
       - name: Checkout
         uses: actions/checkout@v4
         with:
