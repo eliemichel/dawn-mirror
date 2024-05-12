@@ -12,6 +12,7 @@ jobs:
           fetch-tags: true
       - name: Get latest release tag
         run: |
+          cd $GITHUB_WORKSPACE
           echo $(git tag)
           echo $(git tag --sort=-v:refname -l dawn/\*)
           echo $(git tag --sort=-v:refname -l dawn/\* | head -c 1)
