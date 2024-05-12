@@ -1,10 +1,11 @@
 on:
   create
+  workflow_dispatch
 
 jobs:
   build_artifacts:
     runs-on: ubuntu-latest
     steps:
       - name: Every time
-        run: echo "This merges upstream repo"
+        run: echo "This builds artifacts"
 
