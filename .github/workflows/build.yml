@@ -1,13 +1,16 @@
 on:
-  push:
-    tags:        
-      - '**'
+  workflow_call:
   workflow_dispatch:
 
 jobs:
   build_artifacts:
     runs-on: ubuntu-latest
     steps:
-      - name: Build artifacts
-        run: echo "This builds artifacts for ref ${{ github.ref_name }} (${{ github.ref }})."
-
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          - fetch-tags: true
+      - name: Get latest release tag
+        run: |
+          TAG_NAME=$(git tag --sort=-v:refname -l dawn/\* | head -c 1)
+          echo "TAG_NAME=$TAG_NAME"

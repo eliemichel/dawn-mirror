@@ -23,4 +23,6 @@ jobs:
           echo "Pushing to 'https://${GITHUB_ACTOR}:${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git'..."
           git push --mirror --prune origin
         env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build artifacts
+        uses: eliemichel/dawn-mirror/.github/workflows/build.yml@github
