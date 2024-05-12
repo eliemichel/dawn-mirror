@@ -22,3 +22,5 @@ jobs:
           git fetch upstream +refs/heads/*:refs/remotes/origin/*
           echo "Pushing to 'https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git'..."
           git push --mirror --prune "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
