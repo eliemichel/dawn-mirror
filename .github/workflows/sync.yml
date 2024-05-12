@@ -1,0 +1,10 @@
+on:
+  schedule:
+    - cron: '20 5,17 * * *'
+
+jobs:
+  sync_mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every time
+        run: echo "This merges upstream repo"

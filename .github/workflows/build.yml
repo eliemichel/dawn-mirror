@@ -1,0 +1,10 @@
+on:
+  create
+
+jobs:
+  build_artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every time
+        run: echo "This merges upstream repo"
+
