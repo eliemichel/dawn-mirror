@@ -44,7 +44,7 @@ jobs:
           gh release create "$MIRROR_TAG"
           --repo="$GITHUB_REPOSITORY"
           --title="$CHROMIUM_TAG"
-          --notes="Automatic build of tag [`$CHROMIUM_TAG`](https://dawn.googlesource.com/dawn/+/refs/heads/$CHROMIUM_TAG)."
+          --notes="Automatic build of tag [$CHROMIUM_TAG](https://dawn.googlesource.com/dawn/+/refs/heads/$CHROMIUM_TAG)."
 
   build-artifacts:
     if: ${{ !needs.prebuild.outputs.skip }}
