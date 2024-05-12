@@ -25,5 +25,8 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  call-build-artifacts: 
+  call-build-artifacts:
+    permissions:
+      contents: write
+    needs: sync-mirror
     uses: eliemichel/dawn-mirror/.github/workflows/build.yml@github
