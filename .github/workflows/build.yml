@@ -96,9 +96,9 @@ jobs:
 
       - name: Compress artifact
         shell: bash
-        run:
+        run: |
           cd out/install
-          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip .
+          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip *
 
       - name: Upload to release
         env:
