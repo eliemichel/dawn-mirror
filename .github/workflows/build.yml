@@ -98,7 +98,7 @@ jobs:
         shell: bash
         run:
           cd out/install
-          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip *
+          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip .
 
       - name: Upload to release
         env:
