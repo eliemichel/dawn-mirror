@@ -13,4 +13,4 @@ jobs:
       - name: Get latest release tag
         run: |
           cd $GITHUB_WORKSPACE
-          git status
+          git tag
