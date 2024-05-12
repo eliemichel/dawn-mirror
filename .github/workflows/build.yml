@@ -20,20 +20,20 @@ jobs:
       - name: Configure
         run: >
           cmake
-          -B build
+          -B out
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_INSTALL_PREFIX=install
+          -DCMAKE_INSTALL_PREFIX=out/install
 
       - name: Build
         run: >
           cmake
-          --build build
+          --build out
           --config Release
 
       - name: Install
         run: >
           cmake
-          --install build
+          --install out
           --config Release
 
       - name: Upload artifact
@@ -41,5 +41,5 @@ jobs:
         with:
           name: dawn-linux-x64-release
           path: |
-            build/install
+            out/install
 
