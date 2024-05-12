@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          - fetch-tags: true
+          fetch-tags: true
       - name: Get latest release tag
         run: |
           TAG_NAME=$(git tag --sort=-v:refname -l dawn/\* | head -c 1)
