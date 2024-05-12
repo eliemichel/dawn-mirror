@@ -40,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MIRROR_TAG: ${{ needs.prebuild.outputs.mirror-tag }}
           CHROMIUM_TAG: ${{ needs.prebuild.outputs.dawn-tag }}
-        run: ^
+        run: >
           gh release create "$MIRROR_TAG"
           --repo="$GITHUB_REPOSITORY"
           --title="$CHROMIUM_TAG"
@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MIRROR_TAG: ${{ needs.prebuild.outputs.mirror-tag }}
           CHROMIUM_TAG: ${{ needs.prebuild.outputs.dawn-tag }}
-        run: ^
+        run: >
           gh release upload "$MIRROR_TAG"
           --repo="$GITHUB_REPOSITORY"
           dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip
