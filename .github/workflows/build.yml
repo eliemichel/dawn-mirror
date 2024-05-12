@@ -61,6 +61,8 @@ jobs:
 
     runs-on: ${{ matrix.os.image }}
     needs: [ prebuild, create-release ]
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
