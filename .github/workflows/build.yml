@@ -6,16 +6,48 @@ jobs:
   prebuild:
     runs-on: ubuntu-latest
     outputs:
-      tag-name: ${{ steps.find-tag.outputs.tag-name }}
+      dawn-tag: ${{ steps.find-tag.outputs.dawn-tag }}
+      mirror-tag: ${{ steps.find-tag.outputs.mirror-tag }}
+      skip: ${{ steps.find-tag.outputs.skip }}
     steps:
       - name: Find latest tag
         id: find-tag
         run: |
-          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 | sort -rV | head -n 1 | tail -c +11 > tag-name
-          echo "tag-name=$(cat tag-name)" >> "$GITHUB_OUTPUT"
-          cat tag-name
+          # Get upstream dawn tags and our existing mirror release tags
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git dawn/\* | cut -f2 > dawn-tags
+          git ls-remote --tags https://github.com/${GITHUB_REPOSITORY}.git mirror/\* | cut -f2 > mirror-tags
+
+          # We intend to build the latest available dawn tag...
+          cat dawn-tags | sort -rV | head -n 1 | tail -c +11 > latest-dawn-tag
+
+          # ...which would lead to a new matching mirror tag
+          echo mirror/$(cat latest-dawn-tag | tail -c +6) > new-mirror-tag
+
+          # 'skip' is non empty if the new tag already exists
+          echo "skip=$(grep -Fx $(cat new-mirror-tag) mirror-tags)"
+          echo "dawn-tag=$(cat latest-dawn-tag)" >> "$GITHUB_OUTPUT"
+          echo "mirror-tag=$(cat new-mirror-tag)" >> "$GITHUB_OUTPUT"
+
+  create-release:
+    if: ${{ !needs.prebuild.outputs.skip }}
+    runs-on: ubuntu-latest
+    needs: prebuild
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MIRROR_TAG: ${{ needs.prebuild.outputs.mirror-tag }}
+          CHROMIUM_TAG: ${{ needs.prebuild.outputs.dawn-tag }}
+        run: ^
+          gh release create "$MIRROR_TAG"
+          --repo="$GITHUB_REPOSITORY"
+          --title="$CHROMIUM_TAG"
+          --notes="Automatic build of tag [`$CHROMIUM_TAG`](https://dawn.googlesource.com/dawn/+/refs/heads/$CHROMIUM_TAG)."
 
   build-artifacts:
+    if: ${{ !needs.prebuild.outputs.skip }}
     strategy:
       matrix:
         os:
@@ -28,12 +60,12 @@ jobs:
         config: [ Debug, Release ]
 
     runs-on: ${{ matrix.os.image }}
-    needs: prebuild
+    needs: [ prebuild, create-release ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.prebuild.outputs.tag-name }}
+          ref: ${{ needs.prebuild.outputs.dawn-tag }}
 
       - name: Configure
         run: >
@@ -58,6 +90,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}
-          path: |
-            out/install
+          path: out/install
 
+      - name: Compress artifact
+        run:
+          zip -r dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip out/install
+
+      - name: Upload to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MIRROR_TAG: ${{ needs.prebuild.outputs.mirror-tag }}
+          CHROMIUM_TAG: ${{ needs.prebuild.outputs.dawn-tag }}
+        run: ^
+          gh release upload "$MIRROR_TAG"
+          --repo="$GITHUB_REPOSITORY"
+          dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip
