@@ -3,9 +3,19 @@ on:
     - cron: '20 5,17 * * *'
   workflow_dispatch:
 
+env:
+  UPSTREAM_REMOTE: https://github.com/eliemichel/Dawn-mock
+
 jobs:
   sync_mirror:
     runs-on: ubuntu-latest
     steps:
-      - name: Every time
-        run: echo "This merges upstream repo"
+      - name: Merge from '${{ env.UPSTREAM_REMOTE }}'
+        run: |
+          echo "This merges upstream repo"
+          # Inspired by https://github.com/bridgelightcloud/github-mirror-action/blob/main/action.sh
+          git config --global --add safe.directory /github/workspace
+          git clone --bare "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
+          git remote add --mirror=fetch upstream "${{ env.UPSTREAM_REMOTE }}"
+          git fetch upstream +refs/heads/*:refs/remotes/origin/*
+          git push --mirror --prune origin
