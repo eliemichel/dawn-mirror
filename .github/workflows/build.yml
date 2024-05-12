@@ -108,4 +108,4 @@ jobs:
         run: >
           gh release upload "$MIRROR_TAG"
           --repo="$GITHUB_REPOSITORY"
-          dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip
+          out/install/dawn-${{ matrix.os.name }}-x64-${{ matrix.config }}.zip
