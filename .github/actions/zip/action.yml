@@ -17,12 +17,14 @@ runs:
   steps:
     - name: Zip file using PowerShell
       if: runner.os == 'Windows'
+      shell: powershell
       run: |
         cd ${{ inputs.wd }}
         Compress-Archive -Path ${{ inputs.path }} -Destination ${{ inputs.name }}.zip
 
     - name: Zip file using bash
       if: runner.os != 'Windows'
+      shell: bash
       run: |
         cd ${{ inputs.wd }}
         zip -r ${{ inputs.name }}.zip ${{ inputs.path }}
