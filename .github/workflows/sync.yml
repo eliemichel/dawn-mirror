@@ -7,7 +7,7 @@ env:
   UPSTREAM_REMOTE: https://github.com/eliemichel/Dawn-mock
 
 jobs:
-  sync_mirror:
+  sync-mirror:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,5 +24,6 @@ jobs:
           git push --mirror --prune origin
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build artifacts
-        uses: eliemichel/dawn-mirror/.github/workflows/build.yml@github
+
+  call-build-artifacts: 
+    uses: eliemichel/dawn-mirror/.github/workflows/build.yml@github
