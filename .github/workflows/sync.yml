@@ -9,6 +9,8 @@ env:
 jobs:
   sync_mirror:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Merge from '${{ env.UPSTREAM_REMOTE }}'
         run: |
