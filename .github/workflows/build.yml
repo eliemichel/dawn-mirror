@@ -1,10 +1,11 @@
 on:
-  create
+  create:
+  workflow_dispatch:
 
 jobs:
   build_artifacts:
     runs-on: ubuntu-latest
     steps:
-      - name: Every time
+      - name: Build artifacts
         run: echo "This builds artifacts for ref ${{ github.ref_name }} (${{ github.ref }})."
 
